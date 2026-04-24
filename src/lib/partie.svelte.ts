@@ -8,13 +8,20 @@ enum etatPartie {
 	Termine = 'termine'
 }
 
+enum resultat {
+	Gagne = 'gagne',
+	Perdu = 'perdu',
+	Egalite = 'egalite'
+}
+
 export class Partie {
-	etat: etatPartie;
-	pioche: Pioche;
-	mainJoueur: Main;
-	mainDealer: Main;
-	mise = 0;
-	bankroll = 1000;
+	etat = $state(etatPartie.Mise);
+	resultat = $state<resultat | undefined>(undefined);
+	bankroll = $state(1000);
+	mainJoueur = $state(new Main());
+	mainDealer = $state(new Main());
+	pioche = $state(new Pioche());
+	mise = $state(0)
 
 	constructor() {
 		this.mainDealer = new Main();
@@ -50,6 +57,7 @@ export class Partie {
 
 	stand() {
 		this.etat = etatPartie.tourDealer;
+		this.jouerDealer();
 	}
 
 	jouerDealer() {
@@ -60,22 +68,28 @@ export class Partie {
 	}
 
 	resoudre() {
-		if (this.mainDealer.calculerScore() > 21) {
+		if (
+			this.mainDealer.calculerScore() > 21 ||
+			this.mainDealer.calculerScore() < this.mainJoueur.calculerScore()
+		) {
 			this.bankroll += this.mise;
-		} else if (this.mainDealer.calculerScore() < this.mainJoueur.calculerScore()) {
-			this.bankroll += this.mise;
+			this.resultat = resultat.Gagne;
 		} else if (this.mainDealer.calculerScore() > this.mainJoueur.calculerScore()) {
 			this.bankroll -= this.mise;
+			this.resultat = resultat.Perdu;
+		} else {
+			this.resultat = resultat.Egalite;
 		}
 		this.etat = etatPartie.Termine;
 	}
 
-    rejouer(){
-        this.etat = etatPartie.Mise
-        this.mise = 0 
-        this.mainDealer = new Main()
-        this.mainJoueur = new Main()
-        this.pioche.generer()
-        this.pioche.melanger()
-    }
+	rejouer() {
+		this.etat = etatPartie.Mise;
+		this.mise = 0;
+		this.mainDealer = new Main();
+		this.mainJoueur = new Main();
+		this.pioche.generer();
+		this.pioche.melanger();
+		this.resultat = undefined;
+	}
 }
