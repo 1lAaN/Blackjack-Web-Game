@@ -14,6 +14,7 @@
 	{#each partie.mainJoueur.cartes as carte}
 		<p>{carte.valeur} {carte.enseigne}</p>
 	{/each}
-    <p>{partie.mainJoueur.calculerScore}</p>
-    <button onclick={() => partie.hit}>Hit</button>
+    <p>{partie.mainJoueur.calculerScore()}</p>
+    <button onclick={() => partie.hit()}>Hit</button>
+    <button onclick={() => partie.stand()}>Stand</button>
 {/if}
