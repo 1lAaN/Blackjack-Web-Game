@@ -2,7 +2,7 @@ import type { Carte } from './carte';
 import { Enseigne, Valeur } from './carte';
 
 export class Main {
-	cartes: Carte[] = [];
+	cartes= $state<Carte[]>([]);
 
 	ajouterCarte(carte: Carte) {
 		this.cartes.push(carte);

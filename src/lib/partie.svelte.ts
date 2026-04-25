@@ -1,5 +1,5 @@
 import { Pioche } from './pioche';
-import { Main } from './main';
+import { Main } from './main.svelte';
 
 enum etatPartie {
 	Mise = 'mise',
@@ -21,20 +21,25 @@ export class Partie {
 	mainJoueur = $state(new Main());
 	mainDealer = $state(new Main());
 	pioche = $state(new Pioche());
-	mise = $state(0)
+	mise = $state(0);
 
-	constructor() {
-		this.mainDealer = new Main();
-		this.mainJoueur = new Main();
-		this.pioche = new Pioche();
-		this.etat = etatPartie.Mise;
-	}
 	distribuer() {
 		this.mainDealer.ajouterCarte(this.pioche.piocher());
 		this.mainJoueur.ajouterCarte(this.pioche.piocher());
 		this.mainDealer.ajouterCarte(this.pioche.piocher());
 		this.mainJoueur.ajouterCarte(this.pioche.piocher());
 		this.etat = etatPartie.tourJoueur;
+
+		if (this.mainDealer.calculerScore() === 21 && this.mainJoueur.calculerScore() === 21) {
+			this.etat = etatPartie.Termine;
+			this.resultat = resultat.Egalite;
+		} else if (this.mainJoueur.calculerScore() === 21) {
+			this.jouerDealer();
+		} else if (this.mainDealer.calculerScore() === 21) {
+			this.etat = etatPartie.Termine;
+			this.resultat = resultat.Perdu;
+			this.bankroll -= this.mise;
+		}
 	}
 
 	miser(montant: number) {
@@ -49,6 +54,8 @@ export class Partie {
 		if (this.mainJoueur.calculerScore() == 21) {
 			this.etat = etatPartie.tourDealer;
 		} else if (this.mainJoueur.calculerScore() > 21) {
+			this.bankroll -= this.mise;
+			this.resultat = resultat.Perdu;
 			this.etat = etatPartie.Termine;
 		} else {
 			this.etat = etatPartie.tourJoueur;
