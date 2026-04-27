@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Enseigne } from '$lib/carte';
+import Carte from '$lib/components/Carte.svelte';
 	import { Partie } from '$lib/partie.svelte';
 	let partie = $state(new Partie());
 	let montant = $state<number>(0);
@@ -16,14 +18,16 @@
 	<h3>== main dealer ==</h3>
 
 	{#each partie.mainDealer.cartes as carte}
-		<p>{carte.valeur} {carte.enseigne}</p>
+		<!--<p>{carte.valeur} {carte.enseigne}</p> -->
+		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
 	{/each}
 	<p>{partie.mainDealer.calculerScore()}</p>
 
 	<h3>=======</h3>
 
 	{#each partie.mainJoueur.cartes as carte}
-		<p>{carte.valeur} {carte.enseigne}</p>
+		<!--<p>{carte.valeur} {carte.enseigne}</p> -->
+		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
 	{/each}
 
 	<p>{partie.mainJoueur.calculerScore()}</p>
@@ -37,14 +41,14 @@
 	<h3>== main dealer ==</h3>
 
 	{#each partie.mainDealer.cartes as carte}
-		<p>{carte.valeur} {carte.enseigne}</p>
+		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
 	{/each}
 	<p>{partie.mainDealer.calculerScore()}</p>
 
 	<h3>=======</h3>
 
 	{#each partie.mainJoueur.cartes as carte}
-		<p>{carte.valeur} {carte.enseigne}</p>
+		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
 	{/each}
 
 	<p>{partie.mainJoueur.calculerScore()}</p>
@@ -55,15 +59,17 @@
 {#if partie.etat === 'termine'}
 	<h3>== main dealer ==</h3>
 	{#each partie.mainDealer.cartes as carte}
-		<p>{carte.valeur} {carte.enseigne}</p>
+		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
 	{/each}
 	<p>{partie.mainDealer.calculerScore()}</p>
 	<h3>=======</h3>
 
 	{#each partie.mainJoueur.cartes as carte}
-		<p>{carte.valeur} {carte.enseigne}</p>
+		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
 	{/each}
 	{partie.mainJoueur.calculerScore()}
+
+	<h3>============</h3>
 
 	{#if partie.resultat === 'gagne'}
 		<p>Gagné</p>
@@ -81,6 +87,13 @@
 	<button onclick={() => partie.rejouer()}>Rejouer</button>
 {/if}
 
+<!-- DEBUG-->
+
 <p>
 	DEBUG: etat={partie.etat} | resultat={partie.resultat} | bankroll={partie.bankroll} | mise={partie.mise}
 </p>
+
+<!-- test affichage carte-->
+<!--<h3>== test affichage carte ==</h3>
+<Carte valeur="2" enseigne="trefle" visible={true} />
+<Carte valeur="2" enseigne="trefle" visible={false}/> -->

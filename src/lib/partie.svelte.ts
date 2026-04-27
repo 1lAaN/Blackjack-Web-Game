@@ -53,6 +53,7 @@ export class Partie {
 		this.mainJoueur.ajouterCarte(this.pioche.piocher());
 		if (this.mainJoueur.calculerScore() == 21) {
 			this.etat = etatPartie.tourDealer;
+			this.jouerDealer()
 		} else if (this.mainJoueur.calculerScore() > 21) {
 			this.bankroll -= this.mise;
 			this.resultat = resultat.Perdu;
