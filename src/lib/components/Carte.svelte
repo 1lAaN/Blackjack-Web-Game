@@ -6,12 +6,36 @@
 </script>
 
 {#if visible}
-	<div style="position: relative; display: inline-block">
-		<img src={carteFront} style="width: 100px;" />
-		<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; display: flex; flex-direction: column; align-items: center">
+	<div class="carte-container">
+		<img src={carteFront} class="carte-img" alt=""/>
+		<div class="carte-contenu">
 			{valeur} <br> {symboles[enseigne]}
 		</div>
 	</div>
 {:else}
-	<img src={carteBack} style="width: 100px;"/>
+	<img src={carteBack} class="carte-img" alt="" />
 {/if}
+
+<style>
+	.carte-container {
+		position: relative;
+		display: inline-block;
+	}
+
+	.carte-img {
+		width: 100px;
+	}
+
+	.carte-contenu {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 2rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		color: black;
+		font-weight: bold;
+	}
+</style>
