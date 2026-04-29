@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Enseigne } from '$lib/carte';
-import Carte from '$lib/components/Carte.svelte';
+	import Carte from '$lib/components/Carte.svelte';
 	import { Partie } from '$lib/partie.svelte';
 	let partie = $state(new Partie());
 	let montant = $state<number>(0);
@@ -14,21 +14,31 @@ import Carte from '$lib/components/Carte.svelte';
 	<button onclick={() => partie.miser(montant)}>Valider</button>
 {/if}
 
+<!--TOUR JOUEUR-->
+
 {#if partie.etat === 'tourJoueur'}
 	<h3>== main dealer ==</h3>
 
-	{#each partie.mainDealer.cartes as carte}
-		<!--<p>{carte.valeur} {carte.enseigne}</p> -->
-		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
-	{/each}
-	<p>{partie.mainDealer.calculerScore()}</p>
+	<div style="display: flex; gap:10px">
+		{#each partie.mainDealer.cartes as carte, index}
+			<Carte
+				valeur={carte.valeur}
+				enseigne={carte.enseigne}
+				visible={index !== 0 || partie.etat !== 'tourJoueur'}
+			/>
+		{/each}
+	</div>
+
+
 
 	<h3>=======</h3>
 
-	{#each partie.mainJoueur.cartes as carte}
-		<!--<p>{carte.valeur} {carte.enseigne}</p> -->
-		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
-	{/each}
+	<div style="display: flex; gap:10px">
+		{#each partie.mainJoueur.cartes as carte}
+			<!--<p>{carte.valeur} {carte.enseigne}</p> -->
+			<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
+		{/each}
+	</div>
 
 	<p>{partie.mainJoueur.calculerScore()}</p>
 	<button onclick={() => partie.hit()}>Hit</button>
@@ -40,16 +50,20 @@ import Carte from '$lib/components/Carte.svelte';
 {#if partie.etat === 'tourDealer'}
 	<h3>== main dealer ==</h3>
 
-	{#each partie.mainDealer.cartes as carte}
-		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
-	{/each}
+	<div style="display: flex; gap:10px">
+		{#each partie.mainDealer.cartes as carte}
+			<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
+		{/each}
+	</div>
 	<p>{partie.mainDealer.calculerScore()}</p>
 
 	<h3>=======</h3>
 
-	{#each partie.mainJoueur.cartes as carte}
-		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
-	{/each}
+	<div style="display: flex; gap:10px">
+		{#each partie.mainJoueur.cartes as carte}
+			<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
+		{/each}
+	</div>
 
 	<p>{partie.mainJoueur.calculerScore()}</p>
 {/if}
@@ -58,15 +72,21 @@ import Carte from '$lib/components/Carte.svelte';
 
 {#if partie.etat === 'termine'}
 	<h3>== main dealer ==</h3>
-	{#each partie.mainDealer.cartes as carte}
-		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
-	{/each}
+	<div style="display: flex; gap:10px">
+		{#each partie.mainDealer.cartes as carte}
+			<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
+		{/each}
+	</div>
+
 	<p>{partie.mainDealer.calculerScore()}</p>
 	<h3>=======</h3>
 
-	{#each partie.mainJoueur.cartes as carte}
-		<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true}/>
-	{/each}
+	<div style="display: flex; gap:10px">
+		{#each partie.mainJoueur.cartes as carte}
+			<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
+		{/each}
+	</div>
+
 	{partie.mainJoueur.calculerScore()}
 
 	<h3>============</h3>
