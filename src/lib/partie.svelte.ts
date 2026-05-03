@@ -14,9 +14,17 @@ enum resultat {
 	Egalite = 'egalite'
 }
 
+enum raison{
+	bustJoueur = "bustJoueur",
+	bustDealer = "bustDealer",
+	scoreSuperieur = "scoreSuperieur",
+	blackjack = "blackjack"
+}
+
 export class Partie {
 	etat = $state(etatPartie.Mise);
 	resultat = $state<resultat | undefined>(undefined);
+	raison = $state<raison | undefined>(undefined);
 	bankroll = $state(1000);
 	mainJoueur = $state(new Main());
 	mainDealer = $state(new Main());
@@ -76,7 +84,11 @@ export class Partie {
 	}
 
 	resoudre() {
-		if (
+		if (this.mainJoueur.cartes.length === 2 && this.mainJoueur.calculerScore() === 21){
+			this.bankroll += this.mise * 1.5;
+			this.resultat = resultat.Gagne;
+		}
+		else if (
 			this.mainDealer.calculerScore() > 21 ||
 			this.mainDealer.calculerScore() < this.mainJoueur.calculerScore()
 		) {
