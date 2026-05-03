@@ -17,8 +17,11 @@ enum resultat {
 enum raison{
 	bustJoueur = "bustJoueur",
 	bustDealer = "bustDealer",
-	scoreSuperieur = "scoreSuperieur",
-	blackjack = "blackjack"
+	blackjackJoueur = "blackjackJoueur",
+	blackjackDealer = "blackjackDealer",
+	dealerScore = "dealerScore",
+	joueurScore = "joueurScore"
+
 }
 
 export class Partie {
@@ -47,6 +50,7 @@ export class Partie {
 			this.etat = etatPartie.Termine;
 			this.resultat = resultat.Perdu;
 			this.bankroll -= this.mise;
+			this.raison = raison.blackjackDealer
 		}
 	}
 
@@ -66,6 +70,7 @@ export class Partie {
 			this.bankroll -= this.mise;
 			this.resultat = resultat.Perdu;
 			this.etat = etatPartie.Termine;
+			this.raison = raison.bustJoueur
 		} else {
 			this.etat = etatPartie.tourJoueur;
 		}
@@ -87,16 +92,26 @@ export class Partie {
 		if (this.mainJoueur.cartes.length === 2 && this.mainJoueur.calculerScore() === 21){
 			this.bankroll += this.mise * 1.5;
 			this.resultat = resultat.Gagne;
+			this.raison = raison.blackjackJoueur;
 		}
 		else if (
-			this.mainDealer.calculerScore() > 21 ||
-			this.mainDealer.calculerScore() < this.mainJoueur.calculerScore()
+			this.mainDealer.calculerScore() > 21
 		) {
 			this.bankroll += this.mise;
 			this.resultat = resultat.Gagne;
-		} else if (this.mainDealer.calculerScore() > this.mainJoueur.calculerScore()) {
+			this.raison = raison.bustDealer
+
+		} else if (this.mainDealer.calculerScore() < this.mainJoueur.calculerScore()){
+			this.bankroll += this.mise;
+			this.resultat = resultat.Gagne;
+			this.raison = raison.joueurScore;
+
+
+		}
+		 else if (this.mainDealer.calculerScore() > this.mainJoueur.calculerScore()) {
 			this.bankroll -= this.mise;
 			this.resultat = resultat.Perdu;
+			this.raison = raison.dealerScore;
 		} else {
 			this.resultat = resultat.Egalite;
 		}
@@ -110,6 +125,7 @@ export class Partie {
 		this.mainJoueur = new Main();
 		this.pioche.generer();
 		this.pioche.melanger();
+		this.resultat = undefined;
 		this.resultat = undefined;
 	}
 }
