@@ -53,6 +53,15 @@
 					placeholder="Votre mise"
 					bind:value={montant}
 				/>
+			<div class="flex items-center gap-2">
+				<button onclick={() => montant += 5}   class="w-14 h-14 rounded-full bg-[#8b1a1a]    border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">5</button>
+				<button onclick={() => montant += 10}  class="w-14 h-14 rounded-full bg-[#1a3a6b]   border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">10</button>
+				<button onclick={() => montant += 20}  class="w-14 h-14 rounded-full bg-[#1a5c2e]  border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">20</button>
+				<button onclick={() => montant += 50}  class="w-14 h-14 rounded-full bg-[#7a4a1a] border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">50</button>
+				<button onclick={() => montant += 100} class="w-14 h-14 rounded-full bg-[#1a1a1a]  border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">100</button>
+				<button onclick={() => montant += 500} class="w-14 h-14 rounded-full bg-[#3d1a6b] border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">500</button>
+				<button onclick={() => montant = partie.bankroll} class="h-10 rounded-full bg-[#7a6a1a] border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90 px-4">ALL IN</button>
+			</div>
 				<button
 					class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-12 py-3 text-xl font-bold text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
 					onclick={() => partie.miser(montant)}>MISER</button
@@ -126,6 +135,7 @@
 	{#if partie.etat !== 'mise'}
 		<div class="absolute top-12 left-12 flex flex-col gap-1">
 			<p class="text-base font-bold">BANKROLL: {partie.bankroll}</p>
+			<p class="text-base font-bold"> MISE: {partie.mise} </p>
 			{#if partie.etat === 'termine'}
 				{#if partie.resultat === 'gagne'}
 					<p class="text-[2.5rem] font-black text-[#4cff4c]">+{partie.mise}</p>
