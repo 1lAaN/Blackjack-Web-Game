@@ -129,6 +129,8 @@
 					<button onclick={() => montant += 100} class="w-14 h-14 rounded-full bg-[#1a1a1a]  border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">100</button>
 					<button onclick={() => montant += 500} class="w-14 h-14 rounded-full bg-[#3d1a6b] border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90">500</button>
 					<button onclick={() => montant = partie.bankroll} class="h-10 rounded-full bg-[#7a6a1a] border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90 px-4">ALL IN</button>
+					<button onclick={() => montant = 0} class="h-10 rounded-full bg-[#6b1a1a] border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90 px-4">✕ Reset</button>
+					<button onclick={() => partie.miser(montant)} class="h-10 rounded-full bg-[#1a5c1a] border-4 border-dashed border-white/40 text-white/90 font-bold text-sm cursor-pointer shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90 px-4">↺ Même mise</button>
 				</div>
 					<button
 						class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-12 py-3 text-xl font-bold text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
