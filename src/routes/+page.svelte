@@ -143,20 +143,46 @@
 			<!-- ZONE JOUEUR -->
 			<div class="relative flex h-[35%] flex-col items-center justify-end pb-4">
 				{#if partie.etat !== 'mise'}
-					{#if partie.etat === 'tourJoueur' || partie.etat === 'termine'}
-						<div
-							class="mt-2 flex h-12 w-12 items-center justify-center rounded-full text-base font-bold {partie.mainJoueur.calculerScore() >
-							21
-								? 'bg-[#e53e3e] text-white'
-								: 'bg-white text-black'}"
+					{#if partie.peutSplitter()}
+						<button
+							class="mb-2 cursor-pointer rounded-full border-[3px] border-[#b0a05a] bg-[#7a6a1a] px-8 py-2 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+							onclick={() => partie.split()}>SPLIT</button
 						>
-							{partie.mainJoueur.calculerScore()}
-						</div>
 					{/if}
-					<div class="flex justify-center gap-2.5">
-						{#each partie.mainJoueur.cartes as carte}
-							<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
-						{/each}
+					<div class="flex items-end gap-12">
+						<!-- Main joueur -->
+						<div class="flex flex-col items-center gap-1">
+							{#if partie.etat === 'tourJoueur' || partie.etat === 'termine'}
+								<div
+									class="flex h-12 w-12 items-center justify-center rounded-full text-base font-bold {partie.mainJoueur.calculerScore() > 21 ? 'bg-[#e53e3e] text-white' : !partie.mainSplit || partie.mainJouee ? 'bg-white text-black' : 'bg-white/40 text-black/40'}"
+								>
+									{partie.mainJoueur.calculerScore()}
+								</div>
+							{/if}
+							<div class="flex justify-center gap-2.5">
+								{#each partie.mainJoueur.cartes as carte}
+									<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
+								{/each}
+							</div>
+						</div>
+
+						<!-- Main split -->
+						{#if partie.mainSplit}
+							<div class="flex flex-col items-center gap-1">
+								{#if partie.etat === 'tourJoueur' || partie.etat === 'termine'}
+									<div
+										class="flex h-12 w-12 items-center justify-center rounded-full text-base font-bold {partie.mainSplit.calculerScore() > 21 ? 'bg-[#e53e3e] text-white' : !partie.mainJouee ? 'bg-white text-black' : 'bg-white/40 text-black/40'}"
+									>
+										{partie.mainSplit.calculerScore()}
+									</div>
+								{/if}
+								<div class="flex justify-center gap-2.5">
+									{#each partie.mainSplit.cartes as carte}
+										<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
+									{/each}
+								</div>
+							</div>
+						{/if}
 					</div>
 				{/if}
 			</div>
@@ -173,7 +199,7 @@
 				>
 			{/if}
 
-			<!-- INFOS BAS GAUCHE -->
+			<!-- INFOS HAUT GAUCHE -->
 			{#if partie.etat !== 'mise'}
 				<div class="absolute top-12 left-12 flex flex-col gap-1">
 					<p class="text-base font-bold">BANKROLL: {partie.bankroll}</p>
@@ -227,16 +253,22 @@
 		>
 			<button
 				onclick={() => (modalPatchNote = false)}
-				class="absolute top-4 right-4 text-white/50 hover:text-white text-2xl cursor-pointer transition-colors duration-100"
-			>✕</button>
+				class="absolute top-4 right-4 cursor-pointer text-2xl text-white/50 transition-colors duration-100 hover:text-white"
+				>✕</button
+			>
 			<h2 class="text-2xl font-black tracking-widest text-white">PATCH NOTES</h2>
 			<div class="flex flex-col gap-2">
-			
-				{#each commits.filter(c => c.commit.message.startsWith('feat')) as commit}
-				<div class="rounded-xl border border-white/10 bg-white/5 px-4 py-3 flex flex-col gap-1">
-					<p class="text-xs text-white/40">{new Date(commit.commit.author.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
-					<p class="text-sm font-semibold text-white/90">{commit.commit.message}</p>
-				</div>
+				{#each commits.filter((c) => c.commit.message.startsWith('feat')) as commit}
+					<div class="flex flex-col gap-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+						<p class="text-xs text-white/40">
+							{new Date(commit.commit.author.date).toLocaleDateString('fr-FR', {
+								day: '2-digit',
+								month: 'long',
+								year: 'numeric'
+							})}
+						</p>
+						<p class="text-sm font-semibold text-white/90">{commit.commit.message}</p>
+					</div>
 				{/each}
 			</div>
 		</div>

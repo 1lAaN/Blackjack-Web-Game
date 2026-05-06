@@ -14,14 +14,13 @@ enum resultat {
 	Egalite = 'egalite'
 }
 
-enum raison{
-	bustJoueur = "bustJoueur",
-	bustDealer = "bustDealer",
-	blackjackJoueur = "blackjackJoueur",
-	blackjackDealer = "blackjackDealer",
-	dealerScore = "dealerScore",
-	joueurScore = "joueurScore"
-
+enum raison {
+	bustJoueur = 'bustJoueur',
+	bustDealer = 'bustDealer',
+	blackjackJoueur = 'blackjackJoueur',
+	blackjackDealer = 'blackjackDealer',
+	dealerScore = 'dealerScore',
+	joueurScore = 'joueurScore'
 }
 
 export class Partie {
@@ -31,6 +30,8 @@ export class Partie {
 	bankroll = $state(1000);
 	mainJoueur = $state(new Main());
 	mainDealer = $state(new Main());
+	mainSplit = $state<Main | undefined>(undefined);
+	mainJouee = $state(true);
 	pioche = $state(new Pioche());
 	mise = $state(0);
 
@@ -50,7 +51,7 @@ export class Partie {
 			this.etat = etatPartie.Termine;
 			this.resultat = resultat.Perdu;
 			this.bankroll -= this.mise;
-			this.raison = raison.blackjackDealer
+			this.raison = raison.blackjackDealer;
 		}
 	}
 
@@ -62,23 +63,76 @@ export class Partie {
 	}
 
 	hit() {
-		this.mainJoueur.ajouterCarte(this.pioche.piocher());
-		if (this.mainJoueur.calculerScore() == 21) {
-			this.etat = etatPartie.tourDealer;
-			this.jouerDealer()
-		} else if (this.mainJoueur.calculerScore() > 21) {
-			this.bankroll -= this.mise;
-			this.resultat = resultat.Perdu;
-			this.etat = etatPartie.Termine;
-			this.raison = raison.bustJoueur
+		if (this.mainJouee === true) {
+			this.mainJoueur.ajouterCarte(this.pioche.piocher());
+			if (!this.mainSplit) {
+				if (this.mainJoueur.calculerScore() == 21) {
+					this.etat = etatPartie.tourDealer;
+					this.jouerDealer();
+				} else if (this.mainJoueur.calculerScore() > 21) {
+					this.bankroll -= this.mise;
+					this.resultat = resultat.Perdu;
+					this.etat = etatPartie.Termine;
+					this.raison = raison.bustJoueur;
+				} else {
+					this.etat = etatPartie.tourJoueur;
+				}
+			} else {
+				// split existe, basculer vers mainSplit
+				this.mainJouee = false;
+				this.etat = etatPartie.tourJoueur;
+			}
 		} else {
-			this.etat = etatPartie.tourJoueur;
+			if (this.mainSplit) {
+				this.mainSplit.ajouterCarte(this.pioche.piocher());
+				if (this.mainSplit.calculerScore() == 21) {
+					this.etat = etatPartie.tourDealer;
+					this.jouerDealer();
+				} else if (this.mainSplit.calculerScore() > 21) {
+					this.bankroll -= this.mise;
+					this.resultat = resultat.Perdu;
+					this.etat = etatPartie.Termine;
+					this.raison = raison.bustJoueur;
+				} else {
+					this.etat = etatPartie.tourJoueur;
+				}
+			}
 		}
 	}
 
 	stand() {
-		this.etat = etatPartie.tourDealer;
-		this.jouerDealer();
+		if (this.mainSplit) {
+			if (this.mainJouee === true) {
+				this.mainJouee = false;
+			} else {
+				this.etat = etatPartie.tourDealer;
+				this.jouerDealer();
+			}
+		} else {
+			this.etat = etatPartie.tourDealer;
+			this.jouerDealer();
+		}
+	}
+
+	split() {
+		this.mainSplit = new Main();
+		this.mainSplit.ajouterCarte(this.mainJoueur.cartes[1]);
+		this.mainJoueur.cartes.pop();
+		this.mainJoueur.ajouterCarte(this.pioche.piocher());
+		this.mainSplit.ajouterCarte(this.pioche.piocher());
+	}
+
+	peutSplitter() {
+		if (this.etat !== etatPartie.Termine) {
+			if (
+				this.mainJoueur.cartes.length === 2 &&
+				this.mainJoueur.cartes[0].valeur === this.mainJoueur.cartes[1].valeur
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	jouerDealer() {
@@ -89,26 +143,19 @@ export class Partie {
 	}
 
 	resoudre() {
-		if (this.mainJoueur.cartes.length === 2 && this.mainJoueur.calculerScore() === 21){
+		if (this.mainJoueur.cartes.length === 2 && this.mainJoueur.calculerScore() === 21) {
 			this.bankroll += this.mise * 1.5;
 			this.resultat = resultat.Gagne;
 			this.raison = raison.blackjackJoueur;
-		}
-		else if (
-			this.mainDealer.calculerScore() > 21
-		) {
+		} else if (this.mainDealer.calculerScore() > 21) {
 			this.bankroll += this.mise;
 			this.resultat = resultat.Gagne;
-			this.raison = raison.bustDealer
-
-		} else if (this.mainDealer.calculerScore() < this.mainJoueur.calculerScore()){
+			this.raison = raison.bustDealer;
+		} else if (this.mainDealer.calculerScore() < this.mainJoueur.calculerScore()) {
 			this.bankroll += this.mise;
 			this.resultat = resultat.Gagne;
 			this.raison = raison.joueurScore;
-
-
-		}
-		 else if (this.mainDealer.calculerScore() > this.mainJoueur.calculerScore()) {
+		} else if (this.mainDealer.calculerScore() > this.mainJoueur.calculerScore()) {
 			this.bankroll -= this.mise;
 			this.resultat = resultat.Perdu;
 			this.raison = raison.dealerScore;
@@ -126,6 +173,8 @@ export class Partie {
 		this.pioche.generer();
 		this.pioche.melanger();
 		this.resultat = undefined;
-		this.resultat = undefined;
+		this.raison = undefined;
+		this.mainJouee = true;
+		this.mainSplit = undefined;
 	}
 }
