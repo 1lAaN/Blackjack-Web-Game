@@ -5,6 +5,7 @@
 	let montant = $state<number>(0);
 	let ecran = $state<'accueil' | 'jeu'>('accueil');
 	let modalPatchNote = $state(false);
+	let commits = $state<any[]>([]);
 
 	$effect(() => {
 		console.log(
@@ -16,6 +17,14 @@
 			partie.bankroll
 		);
 		(window as any).partie = partie;
+	});
+	$effect(() => {
+		fetch('https://api.github.com/repos/1lAaN/Blackjack-Web-Game/commits')
+			.then((res) => res.json())
+			.then((data) => {
+				commits = data;
+				console.log(data);
+			});
 	});
 </script>
 
@@ -189,9 +198,9 @@
 		</div>
 	{:else}
 		<div
-		class="relative flex h-screen w-screen flex-col items-center justify-between py-16"
-		style="background-image: url('/fond2.svg'); background-size: cover;"
-	>
+			class="relative flex h-screen w-screen flex-col items-center justify-between py-16"
+			style="background-image: url('/fond2.svg'); background-size: cover;"
+		>
 			<h1
 				class="text-center text-7xl font-black tracking-widest drop-shadow-[3px_4px_10px_#443182]
 "
@@ -214,16 +223,22 @@
 {#if modalPatchNote}
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
 		<div
-			class="flex max-h-[70vh] w-[500px] flex-col gap-4 overflow-y-auto rounded-2xl border border-white/20 bg-[#1a1a2e] p-8"
+			class="relative flex max-h-[70vh] w-[500px] flex-col gap-4 overflow-y-auto rounded-2xl border border-white/20 bg-[#1a1a2e] p-8"
 		>
+			<button
+				onclick={() => (modalPatchNote = false)}
+				class="absolute top-4 right-4 text-white/50 hover:text-white text-2xl cursor-pointer transition-colors duration-100"
+			>✕</button>
 			<h2 class="text-2xl font-black tracking-widest text-white">PATCH NOTES</h2>
 			<div class="flex flex-col gap-2">
-				<!-- commits à venir -->
+			
+				{#each commits.filter(c => c.commit.message.startsWith('feat')) as commit}
+				<div class="rounded-xl border border-white/10 bg-white/5 px-4 py-3 flex flex-col gap-1">
+					<p class="text-xs text-white/40">{new Date(commit.commit.author.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+					<p class="text-sm font-semibold text-white/90">{commit.commit.message}</p>
+				</div>
+				{/each}
 			</div>
-			<button
-				class="mt-2 cursor-pointer rounded-full border-[3px] border-white/30 bg-white/10 px-8 py-2 font-bold text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
-				onclick={() => (modalPatchNote = false)}>FERMER</button
-			>
 		</div>
 	</div>
 {/if}
