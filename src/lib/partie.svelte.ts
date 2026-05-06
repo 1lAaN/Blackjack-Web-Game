@@ -78,9 +78,15 @@ export class Partie {
 					this.etat = etatPartie.tourJoueur;
 				}
 			} else {
-				// split existe, basculer vers mainSplit
-				this.mainJouee = false;
-				this.etat = etatPartie.tourJoueur;
+				if (this.mainJoueur.calculerScore() == 21) {
+					this.mainJouee = false;
+					this.etat = etatPartie.tourJoueur;
+				}
+				else if (this.mainJoueur.calculerScore() > 21){
+					this.bankroll -= this.mise;
+					this.mainJouee = false;
+					this.etat = etatPartie.tourJoueur;
+				}
 			}
 		} else {
 			if (this.mainSplit) {
