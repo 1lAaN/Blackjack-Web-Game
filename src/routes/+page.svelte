@@ -200,12 +200,12 @@
 			<!-- BOUTONS HIT / STAND -->
 			{#if partie.etat === 'tourJoueur'}
 				<button
-					class="absolute bottom-12 left-12 cursor-pointer rounded-full border-[3px] border-[#5ab05a] bg-[#3a7a3a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
-					onclick={() => partie.hit()}>HIT</button
+					class="absolute bottom-12 left-12 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a3a3a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+					onclick={() => partie.stand()}>STAND</button
 				>
 				<button
-					class="absolute right-12 bottom-12 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a3a3a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
-					onclick={() => partie.stand()}>STAND</button
+					class="absolute right-12 bottom-12 cursor-pointer rounded-full border-[3px] border-[#5ab05a] bg-[#3a7a3a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+					onclick={() => partie.hit()}>HIT</button
 				>
 			{/if}
 
