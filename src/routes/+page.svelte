@@ -271,7 +271,7 @@
 			>
 			<h2 class="text-2xl font-black tracking-widest text-white">PATCH NOTES</h2>
 			<div class="flex flex-col gap-2">
-				{#each commits.filter((c) => c.commit.message.startsWith('feat')) as commit}
+				{#each commits.filter((c) => c.commit.message.startsWith('feat') || c.commit.message.startsWith('fix')) as commit}
 					<div class="flex flex-col gap-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
 						<p class="text-xs text-white/40">
 							{new Date(commit.commit.author.date).toLocaleDateString('fr-FR', {
