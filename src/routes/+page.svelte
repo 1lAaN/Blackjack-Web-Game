@@ -164,6 +164,11 @@
 									<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
 								{/each}
 							</div>
+							{#if partie.etat === 'termine' && partie.mainSplit}
+								<p class="mt-1 text-sm font-black {partie.resultat === 'gagne' ? 'text-[#4cff4c]' : partie.resultat === 'perdu' ? 'text-[#ff4c4c]' : 'text-white'}">
+									{partie.resultat === 'gagne' ? '+' + partie.mise : partie.resultat === 'perdu' ? '-' + partie.mise : '='}
+								</p>
+							{/if}
 						</div>
 
 						<!-- Main split -->
@@ -181,6 +186,11 @@
 										<Carte valeur={carte.valeur} enseigne={carte.enseigne} visible={true} />
 									{/each}
 								</div>
+								{#if partie.etat === 'termine'}
+									<p class="mt-1 text-sm font-black {partie.resultatSplit === 'gagne' ? 'text-[#4cff4c]' : partie.resultatSplit === 'perdu' ? 'text-[#ff4c4c]' : 'text-white'}">
+										{partie.resultatSplit === 'gagne' ? '+' + partie.mise : partie.resultatSplit === 'perdu' ? '-' + partie.mise : '='}
+									</p>
+								{/if}
 							</div>
 						{/if}
 					</div>
@@ -205,10 +215,13 @@
 					<p class="text-base font-bold">BANKROLL: {partie.bankroll}</p>
 					<p class="text-base font-bold">MISE: {partie.mise}</p>
 					{#if partie.etat === 'termine'}
-						{#if partie.resultat === 'gagne'}
-							<p class="text-[2.5rem] font-black text-[#4cff4c]">+{partie.mise}</p>
-						{:else if partie.resultat === 'perdu'}
-							<p class="text-[2.5rem] font-black text-[#ff4c4c]">-{partie.mise}</p>
+						{@const gainJoueur = partie.resultat === 'gagne' ? partie.mise : partie.resultat === 'perdu' ? -partie.mise : 0}
+						{@const gainSplit = partie.mainSplit ? (partie.resultatSplit === 'gagne' ? partie.mise : partie.resultatSplit === 'perdu' ? -partie.mise : 0) : 0}
+						{@const total = gainJoueur + gainSplit}
+						{#if total > 0}
+							<p class="text-[2.5rem] font-black text-[#4cff4c]">+{total}</p>
+						{:else if total < 0}
+							<p class="text-[2.5rem] font-black text-[#ff4c4c]">{total}</p>
 						{/if}
 					{/if}
 				</div>
