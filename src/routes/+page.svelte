@@ -263,6 +263,7 @@
 				class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-12 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
 				>PATCH NOTE</button
 			>
+			<p class="text-sm text-white/40">dev by <a href="https://github.com/1lAaN" target="_blank" class="text-white/70 hover:text-white transition-colors duration-100">1lAaN</a></p>
 		</div>
 	{/if}
 </div>
