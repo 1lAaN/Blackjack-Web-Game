@@ -148,10 +148,17 @@ export class Partie {
 		}
 	}
 
-	double(){
+	double() {
 		this.mise *= 2;
 		this.mainJoueur.ajouterCarte(this.pioche.piocher());
-		this.stand();
+		if (this.mainJoueur.calculerScore() > 21) {
+			this.bankroll -= this.mise;
+			this.resultat = resultat.Perdu;
+			this.etat = etatPartie.Termine;
+			this.raison = raison.bustJoueur;
+		} else {
+			this.stand();
+		}
 	}
 
 	jouerDealer() {
