@@ -207,6 +207,13 @@
 					class="absolute right-12 bottom-12 cursor-pointer rounded-full border-[3px] border-[#5ab05a] bg-[#3a7a3a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
 					onclick={() => partie.hit()}>HIT</button
 				>
+
+				{#if partie.mainJoueur.cartes.length === 2}
+					<button
+						class="absolute bottom-36 right-12 cursor-pointer rounded-full border-[3px] border-[#5ab0b0] bg-[#1a6b6b] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+						onclick={() => partie.double()}>DOUBLE</button
+					>
+				{/if}
 			{/if}
 
 			<!-- INFOS HAUT GAUCHE -->

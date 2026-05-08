@@ -148,6 +148,12 @@ export class Partie {
 		}
 	}
 
+	double(){
+		this.mise *= 2;
+		this.mainJoueur.ajouterCarte(this.pioche.piocher());
+		this.stand();
+	}
+
 	jouerDealer() {
 		while (this.mainDealer.calculerScore() < 17) {
 			this.mainDealer.ajouterCarte(this.pioche.piocher());
