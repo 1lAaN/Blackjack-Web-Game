@@ -154,7 +154,12 @@
 						<div class="flex flex-col items-center gap-1">
 							{#if partie.etat === 'tourJoueur' || partie.etat === 'termine'}
 								<div
-									class="flex h-12 w-12 items-center justify-center rounded-full text-base font-bold {partie.mainJoueur.calculerScore() > 21 ? 'bg-[#e53e3e] text-white' : !partie.mainSplit || partie.mainJouee ? 'bg-white text-black' : 'bg-white/40 text-black/40'}"
+									class="flex h-12 w-12 items-center justify-center rounded-full text-base font-bold {partie.mainJoueur.calculerScore() >
+									21
+										? 'bg-[#e53e3e] text-white'
+										: !partie.mainSplit || partie.mainJouee
+											? 'bg-white text-black'
+											: 'bg-white/40 text-black/40'}"
 								>
 									{partie.mainJoueur.calculerScore()}
 								</div>
@@ -165,8 +170,18 @@
 								{/each}
 							</div>
 							{#if partie.etat === 'termine' && partie.mainSplit}
-								<p class="mt-1 text-sm font-black {partie.resultat === 'gagne' ? 'text-[#4cff4c]' : partie.resultat === 'perdu' ? 'text-[#ff4c4c]' : 'text-white'}">
-									{partie.resultat === 'gagne' ? '+' + partie.mise : partie.resultat === 'perdu' ? '-' + partie.mise : '='}
+								<p
+									class="mt-1 text-sm font-black {partie.resultat === 'gagne'
+										? 'text-[#4cff4c]'
+										: partie.resultat === 'perdu'
+											? 'text-[#ff4c4c]'
+											: 'text-white'}"
+								>
+									{partie.resultat === 'gagne'
+										? '+' + partie.mise
+										: partie.resultat === 'perdu'
+											? '-' + partie.mise
+											: '='}
 								</p>
 							{/if}
 						</div>
@@ -176,7 +191,12 @@
 							<div class="flex flex-col items-center gap-1">
 								{#if partie.etat === 'tourJoueur' || partie.etat === 'termine'}
 									<div
-										class="flex h-12 w-12 items-center justify-center rounded-full text-base font-bold {partie.mainSplit.calculerScore() > 21 ? 'bg-[#e53e3e] text-white' : !partie.mainJouee ? 'bg-white text-black' : 'bg-white/40 text-black/40'}"
+										class="flex h-12 w-12 items-center justify-center rounded-full text-base font-bold {partie.mainSplit.calculerScore() >
+										21
+											? 'bg-[#e53e3e] text-white'
+											: !partie.mainJouee
+												? 'bg-white text-black'
+												: 'bg-white/40 text-black/40'}"
 									>
 										{partie.mainSplit.calculerScore()}
 									</div>
@@ -187,8 +207,18 @@
 									{/each}
 								</div>
 								{#if partie.etat === 'termine'}
-									<p class="mt-1 text-sm font-black {partie.resultatSplit === 'gagne' ? 'text-[#4cff4c]' : partie.resultatSplit === 'perdu' ? 'text-[#ff4c4c]' : 'text-white'}">
-										{partie.resultatSplit === 'gagne' ? '+' + partie.mise : partie.resultatSplit === 'perdu' ? '-' + partie.mise : '='}
+									<p
+										class="mt-1 text-sm font-black {partie.resultatSplit === 'gagne'
+											? 'text-[#4cff4c]'
+											: partie.resultatSplit === 'perdu'
+												? 'text-[#ff4c4c]'
+												: 'text-white'}"
+									>
+										{partie.resultatSplit === 'gagne'
+											? '+' + partie.mise
+											: partie.resultatSplit === 'perdu'
+												? '-' + partie.mise
+												: '='}
 									</p>
 								{/if}
 							</div>
@@ -210,7 +240,7 @@
 
 				{#if partie.mainJoueur.cartes.length === 2}
 					<button
-						class="absolute bottom-36 right-12 cursor-pointer rounded-full border-[3px] border-[#5ab0b0] bg-[#1a6b6b] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+						class="absolute right-12 bottom-36 cursor-pointer rounded-full border-[3px] border-[#5ab0b0] bg-[#1a6b6b] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
 						onclick={() => partie.double()}>DOUBLE</button
 					>
 				{/if}
@@ -222,8 +252,19 @@
 					<p class="text-base font-bold">BANKROLL: {partie.bankroll}</p>
 					<p class="text-base font-bold">MISE: {partie.mise}</p>
 					{#if partie.etat === 'termine'}
-						{@const gainJoueur = partie.resultat === 'gagne' ? partie.mise : partie.resultat === 'perdu' ? -partie.mise : 0}
-						{@const gainSplit = partie.mainSplit ? (partie.resultatSplit === 'gagne' ? partie.mise : partie.resultatSplit === 'perdu' ? -partie.mise : 0) : 0}
+						{@const gainJoueur =
+							partie.resultat === 'gagne'
+								? partie.mise
+								: partie.resultat === 'perdu'
+									? -partie.mise
+									: 0}
+						{@const gainSplit = partie.mainSplit
+							? partie.resultatSplit === 'gagne'
+								? partie.mise
+								: partie.resultatSplit === 'perdu'
+									? -partie.mise
+									: 0
+							: 0}
 						{@const total = gainJoueur + gainSplit}
 						{#if total > 0}
 							<p class="text-[2.5rem] font-black text-[#4cff4c]">+{total}</p>
@@ -263,7 +304,13 @@
 				class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-12 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
 				>PATCH NOTE</button
 			>
-			<p class="text-sm text-white/40">dev by <a href="https://github.com/1lAaN" target="_blank" class="text-white/70 hover:text-white transition-colors duration-100">1lAaN</a></p>
+			<p class="text-sm text-white/40">
+				dev by <a
+					href="https://github.com/1lAaN"
+					target="_blank"
+					class="text-white/70 transition-colors duration-100 hover:text-white">1lAaN</a
+				>
+			</p>
 		</div>
 	{/if}
 </div>

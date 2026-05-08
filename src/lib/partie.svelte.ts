@@ -161,6 +161,10 @@ export class Partie {
 		}
 	}
 
+	peutDoubler() {
+		if (this.bankroll >= this.mise && this.mainJoueur.cartes.length === 2) return true;
+	}
+
 	jouerDealer() {
 		while (this.mainDealer.calculerScore() < 17) {
 			this.mainDealer.ajouterCarte(this.pioche.piocher());
