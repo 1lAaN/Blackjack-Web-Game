@@ -7,11 +7,11 @@
 
 {#if visible}
 	<div class="relative inline-block">
-		<img src={carteFront} class="w-[130px]" alt=""/>
-		<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[2rem] flex flex-col items-center text-black font-bold">
+		<img src={carteFront} class="w-[80px] sm:w-[130px]" alt=""/>
+		<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[1.2rem] sm:text-[2rem] flex flex-col items-center text-black font-bold">
 			{valeur} <br> {symboles[enseigne]}
 		</div>
 	</div>
 {:else}
-	<img src={carteBack} class="w-[130px]" alt="" />
+	<img src={carteBack} class="w-[80px] sm:w-[130px]" alt="" />
 {/if}

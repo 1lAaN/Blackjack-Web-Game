@@ -67,7 +67,7 @@
 							placeholder="Votre mise"
 							bind:value={montant}
 						/>
-						<div class="flex items-center gap-2">
+						<div class="flex flex-wrap items-center justify-center gap-2">
 							<button
 								onclick={() => (montant += 5)}
 								class="h-14 w-14 cursor-pointer rounded-full border-4 border-dashed border-white/40 bg-[#8b1a1a] text-sm font-bold text-white/90 shadow-lg transition-transform duration-100 hover:scale-110 active:scale-90"
@@ -230,17 +230,17 @@
 			<!-- BOUTONS HIT / STAND -->
 			{#if partie.etat === 'tourJoueur'}
 				<button
-					class="absolute bottom-12 left-12 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a3a3a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+					class="absolute bottom-[37%] left-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a3a3a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:bottom-12 sm:left-12 sm:px-8 sm:py-3 sm:text-lg"
 					onclick={() => partie.stand()}>STAND</button
 				>
 				<button
-					class="absolute right-12 bottom-12 cursor-pointer rounded-full border-[3px] border-[#5ab05a] bg-[#3a7a3a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+					class="absolute right-4 bottom-[37%] cursor-pointer rounded-full border-[3px] border-[#5ab05a] bg-[#3a7a3a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:right-12 sm:bottom-12 sm:px-8 sm:py-3 sm:text-lg"
 					onclick={() => partie.hit()}>HIT</button
 				>
 
 				{#if partie.mainJoueur.cartes.length === 2}
 					<button
-						class="absolute right-12 bottom-36 cursor-pointer rounded-full border-[3px] border-[#5ab0b0] bg-[#1a6b6b] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+						class="absolute right-4 bottom-[50%] cursor-pointer rounded-full border-[3px] border-[#5ab0b0] bg-[#1a6b6b] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:right-12 sm:bottom-36 sm:px-8 sm:py-3 sm:text-lg"
 						onclick={() => partie.double()}>DOUBLE</button
 					>
 				{/if}
@@ -248,7 +248,7 @@
 
 			<!-- INFOS HAUT GAUCHE -->
 			{#if partie.etat !== 'mise'}
-				<div class="absolute top-12 left-12 flex flex-col gap-1">
+				<div class="absolute top-4 left-4 flex flex-col gap-1 sm:top-12 sm:left-12">
 					<p class="text-base font-bold">BANKROLL: {partie.bankroll}</p>
 					<p class="text-base font-bold">MISE: {partie.mise}</p>
 					{#if partie.etat === 'termine'}
@@ -278,7 +278,7 @@
 			<!-- REJOUER -->
 			{#if partie.etat === 'termine'}
 				<button
-					class="absolute right-12 bottom-12 cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-8 py-3 text-lg font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95"
+					class="absolute right-4 bottom-4 cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:right-12 sm:bottom-12 sm:px-8 sm:py-3 sm:text-lg"
 					onclick={() => partie.rejouer()}>REJOUER</button
 				>
 			{/if}
@@ -289,8 +289,7 @@
 			style="background-image: url('/fond2.svg'); background-size: cover;"
 		>
 			<h1
-				class="text-center text-7xl font-black tracking-widest drop-shadow-[3px_4px_10px_#443182]
-"
+				class="text-center text-4xl font-black tracking-widest drop-shadow-[3px_4px_10px_#443182] sm:text-7xl"
 			>
 				KNR<br />BLACKJACK
 			</h1>
