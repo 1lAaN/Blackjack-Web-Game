@@ -15,6 +15,8 @@ jobs:
           node-version: 20
 
       - name: Install & Build
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           npm ci
           npm run build
