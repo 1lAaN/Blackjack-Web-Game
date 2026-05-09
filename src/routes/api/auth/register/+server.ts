@@ -12,11 +12,10 @@ export async function POST({ request }) {
 	if (existing) {
 		return json({ error: 'Email dejà utilisé' }, { status: 409 });
 	}
-    const hash = await bcrypt.hash(password, 10);
-    const [user] = await db.insert(users).values({email:email, password:hash}).returning()
-    await db.insert(stats).values({userId : user.id})
-    const token = jwt.sign({userId : user.id}, JWT_SECRET, {expiresIn:'30d'})
+	const hash = await bcrypt.hash(password, 10);
+	const [user] = await db.insert(users).values({ email: email, password: hash }).returning();
+	await db.insert(stats).values({ userId: user.id });
+	const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
 
-
-	return json({token, bankroll: user.bankroll});
+	return json({ token, bankroll: user.bankroll });
 }
