@@ -13,6 +13,7 @@
 	let authError = $state('');
 	let token = $state<string | null>(null);
 	let commits = $state<any[]>([]);
+	let userName = $state<string | null>(null)
 
 	$effect(() => {
 		console.log(
@@ -24,6 +25,10 @@
 			partie.bankroll
 		);
 		(window as any).partie = partie;
+	});
+	$effect(() => {
+		token = localStorage.getItem('token');
+		userName = localStorage.getItem('name')
 	});
 	$effect(() => {
 		fetch('https://api.github.com/repos/1lAaN/Blackjack-Web-Game/commits')
@@ -380,6 +385,8 @@
 							authError = data.error;
 						} else {
 							token = data.token;
+							localStorage.setItem('token', data.token);
+							localStorage.setItem('name', data.name)
 							partie.bankroll = data.bankroll;
 							modalAuth = false;
 							authError = '';

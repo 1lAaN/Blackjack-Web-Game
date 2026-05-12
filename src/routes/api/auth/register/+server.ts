@@ -21,5 +21,5 @@ export async function POST({ request }) {
 	await db.insert(stats).values({ userId: user.id });
 	const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
 
-	return json({ token, bankroll: user.bankroll });
+	return json({ token, bankroll: user.bankroll, name: user.name});
 }
