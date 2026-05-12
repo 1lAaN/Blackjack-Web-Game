@@ -17,5 +17,5 @@ export async function POST({ request }) {
 		return json({ error: 'mot de passe incorrect' }, { status: 401 });
 	}
 	const token = jwt.sign({ userId: existing.id }, JWT_SECRET, { expiresIn: '30d' });
-	return json({ token, bankroll: existing.bankroll });
+	return json({ token, bankroll: existing.bankroll, name: existing.name });
 }
