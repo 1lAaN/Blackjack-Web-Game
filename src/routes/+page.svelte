@@ -13,7 +13,7 @@
 	let authError = $state('');
 	let token = $state<string | null>(null);
 	let commits = $state<any[]>([]);
-	let userName = $state<string | null>(null)
+	let userName = $state<string | null>(null);
 
 	$effect(() => {
 		console.log(
@@ -27,8 +27,10 @@
 		(window as any).partie = partie;
 	});
 	$effect(() => {
-		token = localStorage.getItem('token');
-		userName = localStorage.getItem('name')
+		if (typeof window !== 'undefined') {
+			token = localStorage.getItem('token');
+			userName = localStorage.getItem('name');
+		}
 	});
 	$effect(() => {
 		fetch('https://api.github.com/repos/1lAaN/Blackjack-Web-Game/commits')
@@ -315,18 +317,40 @@
 				class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-12 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
 				>PATCH NOTE</button
 			>
-			<div class="flex gap-3">
-				<button
-					onclick={() => { authMode = 'login'; modalAuth = true; }}
-					class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-8 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
-					>SE CONNECTER</button
-				>
-				<button
-					onclick={() => { authMode = 'register'; modalAuth = true; }}
-					class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-8 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
-					>S'INSCRIRE</button
-				>
-			</div>
+			{#if !userName}
+				<div class="flex gap-3">
+					<button
+						onclick={() => {
+							authMode = 'login';
+							modalAuth = true;
+						}}
+						class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-8 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
+						>SE CONNECTER</button
+					>
+					<button
+						onclick={() => {
+							authMode = 'register';
+							modalAuth = true;
+						}}
+						class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-8 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
+						>S'INSCRIRE</button
+					>
+				</div>
+			{:else}
+				<div class="flex flex-col items-center gap-3">
+					<p class="text-xl font-black tracking-widest text-white">{userName}</p>
+					<button
+						onclick={() => {
+							token = null;
+							userName = null;
+							localStorage.removeItem('token');
+							localStorage.removeItem('name');
+						}}
+						class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-8 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
+						>DÉCONNEXION</button
+					>
+				</div>
+			{/if}
 			<p class="text-sm text-white/40">
 				dev by <a
 					href="https://github.com/1lAaN"
@@ -339,16 +363,43 @@
 </div>
 {#if modalAuth}
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-		<div class="relative flex w-[400px] flex-col gap-6 rounded-2xl border border-white/20 bg-[#1a1a2e] p-8">
+		<div
+			class="relative flex w-[400px] flex-col gap-6 rounded-2xl border border-white/20 bg-[#1a1a2e] p-8"
+		>
 			<button
-				onclick={() => { modalAuth = false; authError = ''; }}
+				onclick={() => {
+					modalAuth = false;
+					authError = '';
+				}}
 				class="absolute top-4 right-4 cursor-pointer text-2xl text-white/50 transition-colors duration-100 hover:text-white"
 				>✕</button
 			>
 			<h2 class="text-2xl font-black tracking-widest text-white">
-				{authMode === 'login' ? 'SE CONNECTER' : 'S\'INSCRIRE'}
+				{authMode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE"}
 			</h2>
-			<div class="flex flex-col gap-3">
+			<form
+				class="flex flex-col gap-3"
+				onsubmit={async (e) => {
+					e.preventDefault();
+					const res = await fetch(`/api/auth/${authMode}`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ email: authEmail, password: authPassword, name: authName })
+					});
+					const data = await res.json();
+					if (!res.ok) {
+						authError = data.error;
+					} else {
+						token = data.token;
+						userName = data.name;
+						localStorage.setItem('token', data.token);
+						localStorage.setItem('name', data.name);
+						partie.bankroll = data.bankroll;
+						modalAuth = false;
+						authError = '';
+					}
+				}}
+			>
 				{#if authMode === 'register'}
 					<input
 						class="rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-[#5c5bb0]"
@@ -373,38 +424,24 @@
 					<p class="text-sm font-bold text-[#ff4c4c]">{authError}</p>
 				{/if}
 				<button
+					type="submit"
 					class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] py-3 text-base font-bold text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
-					onclick={async () => {
-						const res = await fetch(`/api/auth/${authMode}`, {
-							method: 'POST',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ email: authEmail, password: authPassword, name: authName })
-						});
-						const data = await res.json();
-						if (!res.ok) {
-							authError = data.error;
-						} else {
-							token = data.token;
-							localStorage.setItem('token', data.token);
-							localStorage.setItem('name', data.name)
-							partie.bankroll = data.bankroll;
-							modalAuth = false;
-							authError = '';
-						}
-					}}
 				>
-					{authMode === 'login' ? 'SE CONNECTER' : 'S\'INSCRIRE'}
+					{authMode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE"}
 				</button>
 				<p class="text-center text-sm text-white/40">
 					{authMode === 'login' ? 'Pas de compte ?' : 'Déjà un compte ?'}
 					<button
 						class="cursor-pointer text-white/70 hover:text-white"
-						onclick={() => { authMode = authMode === 'login' ? 'register' : 'login'; authError = ''; }}
+						onclick={() => {
+							authMode = authMode === 'login' ? 'register' : 'login';
+							authError = '';
+						}}
 					>
-						{authMode === 'login' ? 'S\'inscrire' : 'Se connecter'}
+						{authMode === 'login' ? "S'inscrire" : 'Se connecter'}
 					</button>
 				</p>
-			</div>
+			</form>
 		</div>
 	</div>
 {/if}
@@ -437,6 +474,3 @@
 		</div>
 	</div>
 {/if}
-
-
-
