@@ -2,7 +2,8 @@
 	import Carte from '$lib/components/Carte.svelte';
 	import { Partie } from '$lib/partie.svelte';
 	import ppVierge from '$lib/assets/ppVierge.svg';
-	let partie = $state(new Partie);
+	import carteLoading from '$lib/assets/carteLoading.gif';
+	let partie = $state(new Partie());
 	let montant = $state<number>(0);
 	let ecran = $state<'accueil' | 'jeu'>('accueil');
 	let modalPatchNote = $state(false);
@@ -15,6 +16,7 @@
 	let token = $state<string | null>(null);
 	let commits = $state<any[]>([]);
 	let userName = $state<string | null>(null);
+	let loading = $state(true);
 
 	$effect(() => {
 		console.log(
@@ -37,7 +39,10 @@
 					});
 					const data = await res.json();
 					if (data.user) partie.bankroll = data.user.bankroll;
+					loading = false;
 				})();
+			} else {
+				loading = false;
 			}
 		}
 	});
@@ -69,6 +74,15 @@
 		}
 	});
 </script>
+
+{#if loading}
+	<div
+		class="fixed inset-0 z-[100] flex items-center justify-center"
+		style="background-image: url('/fond2.svg'); background-size: cover;"
+	>
+		<img src={carteLoading} alt="chargement" class="h-40 w-auto" />
+	</div>
+{/if}
 
 <div>
 	{#if ecran === 'jeu'}
@@ -273,7 +287,10 @@
 			{#if partie.etat === 'mise'}
 				<button
 					class="absolute bottom-4 left-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a1a1a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:bottom-12 sm:left-12 sm:px-8 sm:py-3 sm:text-lg"
-					onclick={() => {ecran = 'accueil'; partie = new Partie(partie.bankroll) }}>QUITTER</button
+					onclick={() => {
+						ecran = 'accueil';
+						partie = new Partie(partie.bankroll);
+					}}>QUITTER</button
 				>
 			{/if}
 
@@ -333,9 +350,11 @@
 				>
 				<button
 					class="absolute bottom-4 left-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a1a1a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:bottom-12 sm:left-12 sm:px-8 sm:py-3 sm:text-lg"
-					onclick={() => {ecran = 'accueil'; partie = new Partie(partie.bankroll) }}>QUITTER</button
+					onclick={() => {
+						ecran = 'accueil';
+						partie = new Partie(partie.bankroll);
+					}}>QUITTER</button
 				>
-				
 			{/if}
 		</div>
 	{:else}
@@ -382,9 +401,16 @@
 						<p class="text-base font-black tracking-widest text-white">{userName}</p>
 					</a>
 					<button
-						onclick={() => { token = null; userName = null; localStorage.removeItem('token'); localStorage.removeItem('name');partie = new Partie(); }}
-						class="cursor-pointer text-xs text-white/40 hover:text-white transition-colors duration-100"
-					>Se déconnecter</button>
+						onclick={() => {
+							token = null;
+							userName = null;
+							localStorage.removeItem('token');
+							localStorage.removeItem('name');
+							partie = new Partie();
+						}}
+						class="cursor-pointer text-xs text-white/40 transition-colors duration-100 hover:text-white"
+						>Se déconnecter</button
+					>
 				</div>
 			{/if}
 			<button
