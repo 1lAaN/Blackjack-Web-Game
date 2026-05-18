@@ -39,6 +39,11 @@ export class Partie {
 	mainJoueurBust = false;
 	mainSplitBust = false;
 
+	constructor(bankroll: number = 1000) {
+    this.bankroll = bankroll;
+}
+
+
 	distribuer() {
 		this.mainDealer.ajouterCarte(this.pioche.piocher());
 		this.mainJoueur.ajouterCarte(this.pioche.piocher());

@@ -2,7 +2,7 @@
 	import Carte from '$lib/components/Carte.svelte';
 	import { Partie } from '$lib/partie.svelte';
 	import ppVierge from '$lib/assets/ppVierge.svg';
-	let partie = $state(new Partie());
+	let partie = $state(new Partie);
 	let montant = $state<number>(0);
 	let ecran = $state<'accueil' | 'jeu'>('accueil');
 	let modalPatchNote = $state(false);
@@ -25,12 +25,20 @@
 			'| bankroll:',
 			partie.bankroll
 		);
-		(window as any).partie = partie;
 	});
 	$effect(() => {
 		if (typeof window !== 'undefined') {
 			token = localStorage.getItem('token');
 			userName = localStorage.getItem('name');
+			if (token) {
+				(async () => {
+					const res = await fetch('/api/stats', {
+						headers: { Authorization: `Bearer ${token}` }
+					});
+					const data = await res.json();
+					if (data.user) partie.bankroll = data.user.bankroll;
+				})();
+			}
 		}
 	});
 	$effect(() => {
@@ -43,17 +51,21 @@
 	});
 	$effect(() => {
 		if (partie.etat === 'termine' && token) {
-			fetch('/api/stats', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-				body: JSON.stringify({
-					resultat: partie.resultat,
-					resutatSplit: partie.resultatSplit,
-					mise: partie.mise,
-					raison: partie.raison,
-					mainSplit: partie.mainSplit
-				})
-			});
+			(async () => {
+				const res = await fetch('/api/stats', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+					body: JSON.stringify({
+						resultat: partie.resultat,
+						resutatSplit: partie.resultatSplit,
+						mise: partie.mise,
+						raison: partie.raison,
+						mainSplit: partie.mainSplit
+					})
+				});
+				const data = await res.json();
+				partie.bankroll = data.bankroll;
+			})();
 		}
 	});
 </script>
@@ -138,7 +150,6 @@
 							class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-12 py-3 text-xl font-bold text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
 							onclick={() => partie.miser(montant)}>MISER</button
 						>
-						
 					</div>
 				{/if}
 
@@ -261,8 +272,8 @@
 			<!-- BOUTON QUITTER (mise) -->
 			{#if partie.etat === 'mise'}
 				<button
-					class="absolute left-4 bottom-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a1a1a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:left-12 sm:bottom-12 sm:px-8 sm:py-3 sm:text-lg"
-					onclick={() => (ecran = 'accueil')}>QUITTER</button
+					class="absolute bottom-4 left-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a1a1a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:bottom-12 sm:left-12 sm:px-8 sm:py-3 sm:text-lg"
+					onclick={() => {ecran = 'accueil'; partie = new Partie(partie.bankroll) }}>QUITTER</button
 				>
 			{/if}
 
@@ -322,8 +333,9 @@
 				>
 				<button
 					class="absolute bottom-4 left-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a1a1a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:bottom-12 sm:left-12 sm:px-8 sm:py-3 sm:text-lg"
-					onclick={() => (ecran = 'accueil')}>QUITTER</button
+					onclick={() => {ecran = 'accueil'; partie = new Partie(partie.bankroll) }}>QUITTER</button
 				>
+				
 			{/if}
 		</div>
 	{:else}
@@ -361,13 +373,19 @@
 					>
 				</div>
 			{:else}
-				<a
-					href="/profil"
-					class="flex items-center gap-3 rounded-2xl border border-white/20 bg-black/60 px-5 py-3 transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125"
-				>
-					<img src={ppVierge} alt="Photo de profil" class="h-10 w-10 rounded-full" />
-					<p class="text-base font-black tracking-widest text-white">{userName}</p>
-				</a>
+				<div class="flex flex-col items-center gap-2">
+					<a
+						href="/profil"
+						class="flex items-center gap-3 rounded-2xl border border-white/20 bg-black/60 px-5 py-3 transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125"
+					>
+						<img src={ppVierge} alt="Photo de profil" class="h-10 w-10 rounded-full" />
+						<p class="text-base font-black tracking-widest text-white">{userName}</p>
+					</a>
+					<button
+						onclick={() => { token = null; userName = null; localStorage.removeItem('token'); localStorage.removeItem('name');partie = new Partie(); }}
+						class="cursor-pointer text-xs text-white/40 hover:text-white transition-colors duration-100"
+					>Se déconnecter</button>
+				</div>
 			{/if}
 			<button
 				onclick={() => (modalPatchNote = true)}
