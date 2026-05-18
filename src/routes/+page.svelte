@@ -41,6 +41,21 @@
 				console.log(data);
 			});
 	});
+	$effect(() => {
+		if (partie.etat === 'termine' && token) {
+			fetch('/api/stats', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				body: JSON.stringify({
+					resultat: partie.resultat,
+					resutatSplit: partie.resultatSplit,
+					mise: partie.mise,
+					raison: partie.raison,
+					mainSplit: partie.mainSplit
+				})
+			});
+		}
+	});
 </script>
 
 <div>
@@ -72,7 +87,7 @@
 			</div>
 
 			<!-- ZONE CENTRE -->
-			<div class="flex h-[30%] items-center justify-center">
+			<div class="relative flex h-[30%] items-center justify-center">
 				{#if partie.etat === 'mise'}
 					<div class="flex flex-col items-center gap-3">
 						<p class="text-base font-bold">BANKROLL: {partie.bankroll}</p>
@@ -123,6 +138,7 @@
 							class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-12 py-3 text-xl font-bold text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
 							onclick={() => partie.miser(montant)}>MISER</button
 						>
+						
 					</div>
 				{/if}
 
@@ -242,6 +258,14 @@
 				{/if}
 			</div>
 
+			<!-- BOUTON QUITTER (mise) -->
+			{#if partie.etat === 'mise'}
+				<button
+					class="absolute left-4 bottom-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a1a1a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:left-12 sm:bottom-12 sm:px-8 sm:py-3 sm:text-lg"
+					onclick={() => (ecran = 'accueil')}>QUITTER</button
+				>
+			{/if}
+
 			<!-- BOUTONS HIT / STAND -->
 			{#if partie.etat === 'tourJoueur'}
 				<button
@@ -295,6 +319,10 @@
 				<button
 					class="absolute right-4 bottom-4 cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:right-12 sm:bottom-12 sm:px-8 sm:py-3 sm:text-lg"
 					onclick={() => partie.rejouer()}>REJOUER</button
+				>
+				<button
+					class="absolute bottom-4 left-4 cursor-pointer rounded-full border-[3px] border-[#b05a5a] bg-[#7a1a1a] px-6 py-2 text-base font-bold text-white transition-[transform,filter] duration-100 hover:-translate-y-0.5 hover:scale-105 hover:brightness-125 active:scale-95 sm:bottom-12 sm:left-12 sm:px-8 sm:py-3 sm:text-lg"
+					onclick={() => (ecran = 'accueil')}>QUITTER</button
 				>
 			{/if}
 		</div>
