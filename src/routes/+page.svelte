@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Carte from '$lib/components/Carte.svelte';
 	import { Partie } from '$lib/partie.svelte';
+	import ppVierge from '$lib/assets/ppVierge.svg';
 	let partie = $state(new Partie());
 	let montant = $state<number>(0);
 	let ecran = $state<'accueil' | 'jeu'>('accueil');
@@ -312,11 +313,6 @@
 				class="cursor-pointer rounded-full border-[3px] border-[#5c5bb0] bg-[#3b3a7a] px-20 py-5 text-2xl font-black tracking-widest text-white shadow-[0_0_40px_#3b3a7a] transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
 				>JOUER</button
 			>
-			<button
-				onclick={() => (modalPatchNote = true)}
-				class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-12 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
-				>PATCH NOTE</button
-			>
 			{#if !userName}
 				<div class="flex gap-3">
 					<button
@@ -337,20 +333,19 @@
 					>
 				</div>
 			{:else}
-				<div class="flex flex-col items-center gap-3">
-					<p class="text-xl font-black tracking-widest text-white">{userName}</p>
-					<button
-						onclick={() => {
-							token = null;
-							userName = null;
-							localStorage.removeItem('token');
-							localStorage.removeItem('name');
-						}}
-						class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-8 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
-						>DÉCONNEXION</button
-					>
-				</div>
+				<a
+					href="/profil"
+					class="flex items-center gap-3 rounded-2xl border border-white/20 bg-black/60 px-5 py-3 transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125"
+				>
+					<img src={ppVierge} alt="Photo de profil" class="h-10 w-10 rounded-full" />
+					<p class="text-base font-black tracking-widest text-white">{userName}</p>
+				</a>
 			{/if}
+			<button
+				onclick={() => (modalPatchNote = true)}
+				class="cursor-pointer rounded-full border-[3px] border-white/20 bg-black/60 px-12 py-3 text-base font-bold tracking-widest text-white transition-[transform,filter] duration-100 hover:scale-105 hover:brightness-125 active:scale-95"
+				>PATCH NOTE</button
+			>
 			<p class="text-sm text-white/40">
 				dev by <a
 					href="https://github.com/1lAaN"
