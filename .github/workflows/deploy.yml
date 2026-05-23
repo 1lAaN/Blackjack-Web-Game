@@ -49,5 +49,6 @@ jobs:
           script: |
             cd ~/blackjack
             npm ci --omit=dev
+            npm rebuild better-sqlite3
             pm2 start build/index.js --name blackjack || pm2 restart blackjack
             pm2 save
