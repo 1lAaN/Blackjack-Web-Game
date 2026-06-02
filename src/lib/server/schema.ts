@@ -20,3 +20,16 @@ export const stats = sqliteTable('stats', {
 	argentGagne: real('argent_gagne').notNull().default(0),
 	argentPerdu: real('argent_perdu').notNull().default(0)
 });
+
+export const tags = sqliteTable('tags',{
+	id: integer('id').primaryKey({autoIncrement: true}),
+	name: text('name').notNull(),
+	type: text('type').notNull(),
+});
+
+export const userTags = sqliteTable('userTags', {
+	id : integer('id').primaryKey({autoIncrement: true}),
+	userId : integer('user_id').notNull().references(() => users.id),
+	tagId : integer('tag_id').notNull().references(() => tags.id),
+	equipped : integer('equipped').notNull().default(0)
+});

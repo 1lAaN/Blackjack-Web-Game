@@ -1,42 +1,50 @@
-# sv
+# KNR Blackjack
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Jeu de Blackjack en ligne avec authentification, statistiques et système de tags.
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Frontend** : SvelteKit + TypeScript + TailwindCSS
+- **Base de données** : SQLite via Drizzle ORM
+- **Auth** : JWT + bcrypt
+- **Déploiement** : VPS Ubuntu + nginx + pm2 + GitHub Actions
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## Fonctionnalités
 
-To recreate this project with the same configuration:
+- Inscription / Connexion
+- Partie de Blackjack avec split
+- Bankroll persistante en base de données
+- Page profil avec statistiques (parties, victoires, défaites, blackjacks, argent gagné/perdu)
+- Modification du pseudo et du mot de passe
+- Système de tags débloquables selon les statistiques
 
-```sh
-# recreate this project
-npx sv@0.15.1 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:none" --install npm blackjack
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Lancer en local
 
 ```sh
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+## Variables d'environnement
 
-To create a production version of your app:
+Créer un fichier `.env` à la racine du dossier `blackjack` :
+
+```
+JWT_SECRET=votre_secret
+```
+
+## Base de données
+
+```sh
+npx drizzle-kit push
+```
+
+## Build
 
 ```sh
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+## Déploiement
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Le déploiement est automatique à chaque push sur `master` via GitHub Actions.

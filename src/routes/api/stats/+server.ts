@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import { db } from '$lib/server/db';
-import { users, stats } from '$lib/server/schema';
+import { users, stats, tags, userTags } from '$lib/server/schema';
 import { eq } from 'drizzle-orm';
 import { JWT_SECRET } from '$env/static/private';
 
@@ -34,6 +34,9 @@ export async function POST({ request }) {
 		const body = await request.json();
 		const userStats = await db.select().from(stats).where(eq(stats.userId, payload.userId)).get();
 		const existing = await db.select().from(users).where(eq(users.id, payload.userId)).get();
+		if (body.mise <= 0 || body.mise > existing.bankroll) {
+			return json({ error: 'Mise invalide' }, { status: 400 });
+		}
 		const gainMain =
 			body.resultat === 'gagne' && body.raison === 'blackjackJoueur'
 				? body.mise * 1.5
@@ -74,6 +77,17 @@ export async function POST({ request }) {
 			})
 			.where(eq(stats.userId, payload.userId));
 		await db.update(users).set({ bankroll: nouvelleBankroll }).where(eq(users.id, payload.userId));
+		const existingUserTags = await db
+			.select()
+			.from(userTags)
+			.where(eq(userTags.userId, payload.userId))
+			.all();
+		const checkAndAwardTag = async (tagId: number, condition: boolean) => {
+			if(condition && existingUserTags.some(userTag => userTag.tagId === tagId))
+
+		};
+
+		array.forEach((element) => {});
 		return json({ ok: true, bankroll: nouvelleBankroll });
 	} catch (error) {
 		return json({ error: 'Token invalid' }, { status: 401 });
